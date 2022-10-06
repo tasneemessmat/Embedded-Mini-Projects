@@ -1,0 +1,45 @@
+/*
+ ================================================================================================
+ Name        : FanControllerSystem.c
+ Author      : TASNEEM ESSMAT
+ Description : Design a temperature-controlled fan using ATmega32 microcontroller
+ Date        : Oct 4, 2022
+ ================================================================================================
+ */
+
+
+#include "lcd.h"
+#include "adc.h"
+
+
+int main(void)
+{
+	uint8 temp = 0;
+	/* initialize ADC driver :
+	 * ADC driver should configure to operate using the internal reference voltage 2.56
+	 *  voltage and prescaler F_CPU/8.
+	 */
+	ADC_init(InternalRefVoltage, F_CPU_8);
+	LCD_init();	/* initialize LCD driver */
+
+	/* Display this string only once on LCD */
+	LCD_displayStringRowColumn(0,6,"FAN IS   ");
+	LCD_displayStringRowColumn(1, 6, "Temp =    C")
+
+	while(1)
+	{
+		temp = LM35_getTemperature();
+
+		if(temp >= 100)
+		{
+			LCD_intgerToString(temp);
+		}
+		else
+		{
+			LCD_intgerToString(temp);
+			/* In case the digital value is two or one digits print space in the next digit place */
+			LCD_displayCharacter(' ');
+		}
+		DcMotor_Rotate();
+	}
+}

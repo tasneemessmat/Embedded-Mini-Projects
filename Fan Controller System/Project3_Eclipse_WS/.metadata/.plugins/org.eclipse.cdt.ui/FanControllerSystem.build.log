@@ -1,0 +1,49 @@
+19:58:18 **** Build of configuration Debug for project FanControllerSystem ****
+make all 
+Building file: ../FanControllerSystem.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega32 -DF_CPU=1000000UL -MMD -MP -MF"FanControllerSystem.d" -MT"FanControllerSystem.o" -c -o "FanControllerSystem.o" "../FanControllerSystem.c"
+Finished building: ../FanControllerSystem.c
+ 
+Building file: ../adc.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega32 -DF_CPU=1000000UL -MMD -MP -MF"adc.d" -MT"adc.o" -c -o "adc.o" "../adc.c"
+Finished building: ../adc.c
+ 
+Building file: ../dcmotor.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega32 -DF_CPU=1000000UL -MMD -MP -MF"dcmotor.d" -MT"dcmotor.o" -c -o "dcmotor.o" "../dcmotor.c"
+Finished building: ../dcmotor.c
+ 
+Building file: ../lm35_sensor.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega32 -DF_CPU=1000000UL -MMD -MP -MF"lm35_sensor.d" -MT"lm35_sensor.o" -c -o "lm35_sensor.o" "../lm35_sensor.c"
+Finished building: ../lm35_sensor.c
+ 
+Building target: FanControllerSystem.elf
+Invoking: AVR C Linker
+avr-gcc -Wl,-Map,FanControllerSystem.map -mmcu=atmega32 -o "FanControllerSystem.elf"  ./FanControllerSystem.o ./adc.o ./dcmotor.o ./gpio.o ./lcd.o ./lm35_sensor.o ./pwm.o   
+Finished building target: FanControllerSystem.elf
+ 
+Invoking: AVR Create Extended Listing
+avr-objdump -h -S FanControllerSystem.elf  >"FanControllerSystem.lss"
+Finished building: FanControllerSystem.lss
+ 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega32 FanControllerSystem.elf
+AVR Memory Usage
+----------------
+Device: atmega32
+
+Program:    9612 bytes (29.3% Full)
+(.text + .data + .bootloader)
+
+Data:        296 bytes (14.5% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+
+19:58:20 Build Finished. 0 errors, 0 warnings. (took 2s.133ms)
+

@@ -1,0 +1,98 @@
+/*
+ ================================================================================================
+ Name        : FanControllerSystem.c
+ Author      : TASNEEM ESSMAT
+ Description : Design a temperature-controlled fan using ATmega32 microcontroller
+ Date        : Oct 4, 2022
+ ================================================================================================
+ */
+
+
+#include "lcd.h"
+#include "adc.h"
+#include "dcmotor.h"
+#include "lm35_sensor.h"
+
+
+
+int main(void)
+{
+	uint8 temp = 0;
+
+	/* initialize ADC driver :
+	 * ADC driver should configure to operate using the internal reference voltage 2.56
+	 *  voltage and prescaler F_CPU/8.
+	 */
+	/* Create configuration structure for ADC driver */
+	ADC_ConfigType Adc_Config = {InternalRefVoltage,F_CPU_8};
+	ADC_init(&Adc_Config);
+	LCD_init();	/* initialize LCD driver */
+	DcMotor_Init();/* initialize DC Motor driver */
+
+	/* Display this string only once on LCD */
+	LCD_displayStringRowColumn(0,3,"FAN IS   ");
+	LCD_displayStringRowColumn(1, 3,"Temp =     C");
+
+	while(1)
+	{
+		temp = LM35_getTemperature();
+
+
+
+		if(temp < 30)
+		{
+			DcMotor_Rotate(Stop, 0);
+			LCD_moveCursor(0,10);
+			LCD_displayString("Off");
+			LCD_moveCursor(1, 10);/* In case the digital value is two or one digits print space in the next digit place */
+			LCD_intgerToString(temp);
+			LCD_displayCharacter(' ');
+
+		}
+		else if(temp < 60 && temp >= 30)
+		{
+			DcMotor_Rotate(Clockwise, 25);
+			LCD_moveCursor(0,10);
+			LCD_displayString("ON ");
+			LCD_moveCursor(1, 10);
+			/* In case the digital value is two or one digits print space in the next digit place */
+			LCD_intgerToString(temp);
+			LCD_displayCharacter(' ');
+
+		}
+		else if(temp < 90 && temp >= 60)
+		{
+			DcMotor_Rotate(Clockwise, 50);
+			LCD_moveCursor(0,10);
+			LCD_displayString("ON ");
+			LCD_moveCursor(1, 10);
+			/* In case the digital value is two or one digits print space in the next digit place */
+			LCD_intgerToString(temp);
+			LCD_displayCharacter(' ');
+
+		}
+		else if(temp < 120 && temp >= 90)
+		{
+			DcMotor_Rotate(Clockwise, 75);
+			LCD_moveCursor(0,10);
+			LCD_displayString("ON ");
+			LCD_moveCursor(1, 10);
+			if(temp > 100 ){
+				LCD_intgerToString(temp);
+			}
+			else{
+				LCD_intgerToString(temp);
+				LCD_displayCharacter(' ');
+			}
+		}
+		else if(temp >=120)
+		{
+			DcMotor_Rotate(Clockwise, 100);
+			LCD_moveCursor(0,10);
+			LCD_displayString("ON ");
+			LCD_moveCursor(1, 10);
+			LCD_intgerToString(temp);
+		}
+
+	}
+}

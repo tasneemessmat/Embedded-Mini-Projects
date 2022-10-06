@@ -1,0 +1,19 @@
+/******************************************************************************
+ *
+ * Module: DC-Motor
+ *
+ * File Name: dcmotor.c
+ *
+ * Description: source file for the LM35 DC-Motor Driver
+ *
+ * Author: TASNEEM ESSMAT
+ *
+ *******************************************************************************/
+
+#include "dcmotor.h"
+
+
+void DcMotor_Init(void)
+{
+
+}

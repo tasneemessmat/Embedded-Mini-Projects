@@ -1,0 +1,21 @@
+/******************************************************************************
+ *
+ * Module: DC-Motor
+ *
+ * File Name: pwm.h
+ *
+ * Description: header file for the PWM Driver
+ *
+ * Author: TASNEEM ESSMAT
+ *
+ *******************************************************************************/
+#include"pwm.h"
+
+
+
+void PWM_Timer0_Start(uint8 duty_cycle)
+{
+
+}
+
+

@@ -1,0 +1,28 @@
+/*
+ ================================================================================================
+ Name        : FanControllerSystem.c
+ Author      : TASNEEM ESSMAT
+ Description : Design a temperature-controlled fan using ATmega32 microcontroller
+ Date        : Oct 4, 2022
+ ================================================================================================
+ */
+
+
+#include "lcd.h"
+#include "adc.h"
+
+
+int main(void)
+{
+	/*
+	 * ADC driver should configure to operate using the internal reference voltage 2.56
+	 *  voltage and prescaler F_CPU/8.
+	 */
+	ADC_init(InternalRefVoltage, F_CPU_8);
+
+
+	while(1)
+	{
+
+	}
+}

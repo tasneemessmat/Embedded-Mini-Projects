@@ -1,0 +1,18 @@
+/******************************************************************************
+ *
+ * Module: DC-Motor
+ *
+ * File Name: dcmotor.h
+ *
+ * Description: header file for the LM35 DC-Motor Driver
+ *
+ * Author: TASNEEM ESSMAT
+ *
+ *******************************************************************************/
+
+#ifndef PWM_H_
+#define PWM_H_
+
+#include "std_types.h"
+
+#endif /* PWM_H_ */

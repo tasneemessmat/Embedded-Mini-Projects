@@ -1,0 +1,20 @@
+/******************************************************************************
+ *
+ * Module: DC-Motor
+ *
+ * File Name: dcmotor.c
+ *
+ * Description: source file for the LM35 DC-Motor Driver
+ *
+ * Author: TASNEEM ESSMAT
+ *
+ *******************************************************************************/
+
+#include "dcmotor.h"
+#include "gpio.h"
+
+void DcMotor_Init(void)
+{
+	GPIO_setupPinDirection(DC_MOTOR_PORT1_ID, DC_MOTOR_PIN1_ID, PIN_OUTPUT);
+	GPIO_setupPinDirection(DC_MOTOR_PORT2_ID, DC_MOTOR_PIN2_ID, PIN_OUTPUT);
+}
