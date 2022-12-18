@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;Distance_Measurement_System/hcsr04.c&apos; to &apos;ultrasonic.c&apos;" description="Rename resource &apos;hcsr04.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="hcsr04.c" name="ultrasonic.c" stamp="1665524677215" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;Distance_Measurement_System/hcsr04.h&apos; to &apos;ultrasonic.h&apos;" description="Rename resource &apos;hcsr04.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="hcsr04.h" name="ultrasonic.h" stamp="1665524690987" updateReferences="true"/>
+</session>

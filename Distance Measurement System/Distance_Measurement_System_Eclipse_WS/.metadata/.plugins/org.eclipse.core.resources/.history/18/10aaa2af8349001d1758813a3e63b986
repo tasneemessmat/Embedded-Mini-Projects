@@ -1,0 +1,26 @@
+/*
+ * Distance_Measurement_System.c
+ *
+ *  Created on: Oct 11, 2022
+ *      Author: TASNEEM
+ */
+
+
+#include "lcd.h"
+#include "hcsr04.h"
+
+
+
+
+int main(void)
+{
+
+	/* Create configuration structure for ICU driver */
+	Icu_ConfigType Icu_Config = {F_CPU_8,RISING};
+
+
+	/* Initialize the LCD and ICU driver */
+	LCD_init();
+	Icu_init(&Icu_Config);
+
+}

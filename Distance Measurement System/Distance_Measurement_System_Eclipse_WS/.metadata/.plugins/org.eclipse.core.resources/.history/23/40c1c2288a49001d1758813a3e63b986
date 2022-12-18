@@ -1,0 +1,27 @@
+/*
+ * Distance_Measurement_System.c
+ *
+ *  Created on: Oct 11, 2022
+ *      Author: TASNEEM
+ */
+
+
+#include "lcd.h"
+#include "hcsr04.h"
+
+
+
+
+int main(void)
+{
+	/* Initialize the LCD driver */
+	LCD_init();
+	/* Initialize the Ultrasonic driver */
+	Ultrasonic_init();
+
+	while(1)
+	{
+
+	}
+
+}

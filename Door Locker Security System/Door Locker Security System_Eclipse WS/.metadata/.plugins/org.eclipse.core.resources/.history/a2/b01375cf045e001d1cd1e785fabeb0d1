@@ -1,0 +1,254 @@
+/*
+ * HMI_Services.c
+ *
+ *  Created on: Nov 3, 2022
+ *      Author: TASNEEM
+ */
+
+#include <util/delay.h>
+#include "uart.h"
+#include "timer1.h"
+#include <avr/io.h>
+#include "lcd.h"
+#include "keypad.h"
+#include "HMI_Services.h"
+#include "gpio.h"
+
+
+
+
+/* global variable contain the ticks count of the timer */
+uint8 g_tick = 0;
+uint32 NUMBER_OF_COMPARE_MTACHES_Required;
+uint8 count =0;
+/*Variables for storing password*/
+uint8 password [6] ;
+uint8 ConfirmPassword [6] ;
+uint8 Password_status =0;
+
+
+void HMI_init(void)
+{
+	/* Initialize the LCD */
+	LCD_init();
+
+	/* Initialize The UART */
+	Uart_ConfigType UARTConfig = {9600, Disabled, OneBit, EightBits};
+	UART_init(&UARTConfig);
+
+	/* Enable Global Interrupt I-Bit */
+	SREG |= (1<<7);
+	/* Set the Call back function pointer in the TIMER driver */
+	Timer1_setCallBack(HMI_timer1);
+
+
+}
+void HMI_sendPassword(uint8 * arrPass){
+
+	for(int i =0 ; i< 5 ; i++)
+	{
+		UART_sendByte(HMI_ECU_READY);
+		/* Now wait for Control ECU to be ready to receive the passwords*/
+		while(UART_recieveByte() != CONTROL_ECU_READY){}
+		UART_sendByte(arrPass[i]);
+	}
+
+}
+void HMI_waitResponse(uint8 * Password_status)
+{
+	/* Now we will wait it's response with their status */
+	while(UART_recieveByte() != CONTROL_ECU_READY){}
+
+	UART_sendByte(HMI_ECU_READY);
+
+	*Password_status = UART_recieveByte();
+
+}
+void HMI_writePassword(uint8 * arrPass){
+	int i=0,key=0,pass_counter;
+
+	 key = KEYPAD_getPressedKey();
+	delay_ms(500);
+
+	if( (key >= 0) && (key <= 9) ){
+
+
+			password[pass_counter]=key;
+			LCD_displayCharacter('*');
+			pass_counter++;
+
+		}
+	if (pass_counter == 5){
+		do{
+		key = KEYPAD_getPressedKey();
+		delay_ms(500);
+		}while(key != '=');
+
+		break;
+	}
+}
+
+/*
+ * Function to take password from user, and send it to control ecu.
+ */
+void HMI_createPassword_changePassword(void){
+	/*First Loop Is responsible for Creating a Password for the system*/
+	while (1){
+				/* Create Password for the first time or change it */
+			LCD_clearScreen();
+
+			LCD_displayString("Please Enter Password: ");
+
+			HMI_writePassword(password);
+			LCD_clearScreen();
+
+			LCD_displayString("Please re-enter the same Pass :");
+				/* Now write the same password again */
+			HMI_writePassword(ConfirmPassword);
+
+			/* Now That we have both passwords we will send them to CONTROL ECU To check them*/
+			HMI_sendPassword(password);
+			HMI_sendPassword(ConfirmPassword);
+
+			HMI_waitResponse(&Password_status);
+
+
+			if(Password_status == MATCHED_PASSWORDS)
+			{
+				LCD_clearScreen();
+				LCD_displayString("Password Created Successfully!");
+				_delay_ms(1000);
+				/*
+				 * Exit the loop to get to the application
+			 */
+			break;
+		}
+		else if(Password_status == UNMATCHED_PASSWORDS){
+			LCD_clearScreen();
+			LCD_displayString("Passwords Are Not Matching!!");
+			_delay_ms(1000);
+
+		}
+	}
+}
+
+
+
+
+
+void HMI_openDoor(void)
+{
+	/* Structure for adjusting TIMER1 to control the door timing
+		 * We will use  TIMER1 : F_CPU = 1 MHz , Prescaler = 1024
+		 *                            Ftimer =  1 KHZ
+		 *                            Ttimer = 1 milli second
+		 *                            with compare value of 3000
+		 *                            Ttimer = 3000 * 0.001 = 3 seconds
+		 *                          1- To make the door opening time is 15 second we need 5 overflow
+		 *                          2- To make the door holding time is 1 overflow (5+1) seconds we need 6 overflow
+		 *                          3- To make the door closing time is (5+1+5) seconds we need 11 overflow
+		 * */
+	Timer1_ConfigType TimerDoor= {0,3000,F_CPU_1024,CTCMode};
+	LCD_clearScreen();
+	LCD_displayString("Door is Unlocking");
+
+	Timer1_init(&TimerDoor);
+
+	while(g_tick < 5);
+	LCD_clearScreen();
+	LCD_displayString("Door is Unlocked");
+
+	while(g_tick < 6);
+
+	LCD_clearScreen();
+	LCD_displayString("Door is Locking");
+
+	while(g_tick < 11);
+
+	LCD_clearScreen();
+	LCD_displayString("Door is Locked");
+
+	_delay_ms(1000);
+	Timer1_deInit();
+	g_tick = 0;
+}
+void HMI_timer1(void)
+{
+	/*Just increment timer tick*/
+	g_tick++;
+
+}
+uint8 HMI_handlingUnmatchedPasswords(void){
+	LCD_clearScreen();
+
+	LCD_displayString("Please Enter Password: ");
+
+	HMI_writePassword(password);
+
+	HMI_sendPassword(password);
+
+	HMI_waitResponse(&Password_status);
+
+	if(Password_status == UNMATCHED_PASSWORDS){
+
+		LCD_clearScreen();
+		LCD_displayString("Invalid Password!");
+		_delay_ms(500);
+		LCD_displayString("Please Enter Password: ");
+		HMI_writePassword(password);
+
+		HMI_sendPassword(password);
+		HMI_waitResponse(&Password_status);
+
+		if(Password_status == UNMATCHED_PASSWORDS)
+		{
+			LCD_clearScreen();
+			LCD_displayString("Invalid Password!");
+			_delay_ms(500);
+			LCD_clearScreen();
+			LCD_displayString("Please Enter Password One More Time! : ");
+			HMI_writePassword(password);
+
+			HMI_sendPassword(password);
+			HMI_waitResponse(&Password_status);
+			return Password_status;
+
+		}
+		else if(Password_status == MATCHED_PASSWORDS)
+
+		{
+			LCD_clearScreen();
+			LCD_displayString("Valid Password ");
+			_delay_ms(500);
+
+
+		}
+	}
+	else if(Password_status == MATCHED_PASSWORDS){
+		LCD_clearScreen();
+		LCD_displayString("Valid Password ");
+		_delay_ms(500);
+
+	}
+	return Password_status;
+}
+void HMI_lock(void){
+	/* Structure for adjusting TIMER1 to control 1 minute lock
+	 * We will use  TIMER1 : F_CPU = 1 MHz , Prescaler = 1024
+	 *                            Ftimer =  1 KHZ
+	 *                            Ttimer = 1 milli second
+	 *                            with compare value of 30000
+	 *                            Ttimer = 30000 * 0.001 = 30 seconds
+	 * So we need 2 overflows
+	 **/
+	Timer1_ConfigType TimerError = {0,30000,F_CPU_1024,CTCMode};
+	LCD_clearScreen();
+	LCD_displayString("Error No More attempts!!");
+	g_tick =0;
+
+	/*Initialize Timer Module*/
+	Timer1_init(&TimerError);
+	while(g_tick < 2);
+	LCD_clearScreen();
+	Timer1_deInit();
+}

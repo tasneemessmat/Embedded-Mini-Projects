@@ -1,0 +1,42 @@
+/*
+ * Distance_Measurement_System.c
+ *
+ *  Created on: Oct 11, 2022
+ *      Author: TASNEEM
+ */
+
+
+#include "lcd.h"
+#include "hcsr04.h"
+#include "avr/io.h"
+#include "icu.h"
+
+
+
+
+int main(void)
+{
+	uint16 a_distance = 0;
+	/* Enable Global Interrupt I-Bit */
+	SREG |= (1<<7);
+	/* Initialize the LCD driver */
+	LCD_init();
+	/* Initialize the Ultrasonic driver */
+	Ultrasonic_init();
+	LCD_displayString("Distance =    cm");
+
+
+	while(1)
+	{
+		if(g_edgeCount == 1){
+			g_edgeCount = 0;
+			a_distance = Ultrasonic_readDistance();
+			LCD_moveCursor(0, 10);
+			/*Display The Distance on LCD screen*/
+			LCD_intgerToString(a_distance);
+
+		}
+
+	}
+
+}
