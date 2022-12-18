@@ -6,7 +6,7 @@
  *
  * Description: Header file for the AVR ICU driver
  *
- * Author: Mohamed Tarek
+ * Author: TASNEEM ESSMAT
  *
  *******************************************************************************/
 
